@@ -18,7 +18,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - run: npm run build --debug
       - name: Deploy to Observable Cloud
         # This parameter to `--message` will use the latest commit message
         run: npm run deploy -- --message "$(git log -1 --pretty=%s)"

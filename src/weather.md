@@ -27,13 +27,3 @@ function temperaturePlot(data, {width} = {}) {
 <div class="grid grid-cols-1">
   <div class="card">${resize((width) => temperaturePlot(forecast, {width}))}</div>
 </div>
-
-
-<div>
-  <script type="module">
-  import {Chart} from "https://marc-chiu2.observablehq.cloud/prem-dashboard/components/chart.js";
-
-  document.body.append(await Chart());
-
-  </script>
-</div>

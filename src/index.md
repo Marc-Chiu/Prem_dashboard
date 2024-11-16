@@ -1,111 +1,222 @@
 ---
+theme: "cotton"
+title: Premier League Player Comparison
 toc: false
 ---
 
-<div class="hero">
-  <h1>Prem Dashboard</h1>
-  <h2>Welcome to your new app! Edit&nbsp;<code style="font-size: 90%;">src/index.md</code> to change this page.</h2>
-  <a href="https://observablehq.com/framework/getting-started">Get started<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
+```js
+import {NameCard} from "/components/stat_cards/top_stats.js";
+import {StatsComponent} from "/components/stat_cards/stats_cards.js";
+import * as React from "npm:react";
+import * as d3 from "npm:d3";
+import {passingChart} from "/components/charts/passing.js";
+import {radialChart} from "/components/charts/radial.js";
+```
+
+```js
+const stats = await FileAttachment("/data/attack_stats.json").json();
+const data = Object.entries(stats).map(([key, value]) => {
+        return {
+        id: key,
+        ...value
+        };
+}).filter(d => d["Top stats"]["Minutes played"] > 0);
+const radialData = d3.map(data, d => ({
+        id: d.id,
+        "xG + xA": (d["Top stats"]["xG + xA"] / (d["Top stats"]["Minutes played"] + .001)  * 90),
+        "Chances Created per 90": (d["Top stats"]["Chances created"] / (d["Top stats"]["Minutes played"] + .001) * 90),
+        "Conversion Rate": (d["Top stats"]["Goals"]),
+        "Shots per 90": (d["Top stats"]["Total shots"] / (d["Top stats"]["Minutes played"] + .001) * 90),
+        "Dispossessed per 90": (d["Attack stats"]["Dispossessed"] / (d["Top stats"]["Minutes played"] + .001)* 90),
+        "Touches per 90": (d["Attack stats"]["Touches"] / (d["Top stats"]["Minutes played"] + .001) * 90),
+        "Minutes Played": d["Top stats"]["Minutes played"]
+}));
+
+const chancesCreatedRank = d3.rank(radialData, d => d["Chances Created per 90"]);
+const shotsRank = d3.rank(radialData, d => d["Shots per 90"]);
+const xGxARank = d3.rank(radialData, d => d["xG + xA"]);
+const shotConversionRank = d3.rank(radialData, d => d["Conversion Rate"]);
+const dispossessedRank = d3.rank(radialData, d => d["Dispossessed per 90"]);
+const touchesRank = d3.rank(radialData, d => d["Touches per 90"]);
+const minutesPlayedRank = d3.rank(radialData, d => d["Minutes Played"]);
+
+const NUM_PLAYERS = radialData.length;
+
+const radialRank = radialData.map((player, index) => ({
+        id: parseInt(player.id),
+        "xG + xA": xGxARank[index] / NUM_PLAYERS,
+        "Chances Created per 90": chancesCreatedRank[index] / NUM_PLAYERS,
+        "Conversion Rate": shotConversionRank[index] / NUM_PLAYERS,
+        "Shots per 90": shotsRank[index] / NUM_PLAYERS,
+        "Dispossessed per 90": dispossessedRank[index] / NUM_PLAYERS,
+        "Touches per 90": touchesRank[index] / NUM_PLAYERS,
+        "Minutes Played": minutesPlayedRank[index] / NUM_PLAYERS
+}));
+```
+
+```js
+function renderRadialCharts(playerRadialData) {
+        return html`<div style= "margin-right: 20px">${radialChart(playerRadialData)}</div>`
+}
+```
+
+
+```js
+console.log("loading data");
+const standard_data = await FileAttachment("/fbrefData/player_standard.csv").csv();
+const passing_data = await FileAttachment("/fbrefData/player_passing.csv").csv();
+const defense_data = await FileAttachment("/fbrefData/player_defense.csv").csv();
+const possession_data = await FileAttachment("/fbrefData/player_possession.csv").csv();
+const shooting_data = await FileAttachment("/fbrefData/player_shooting.csv").csv();
+const IDs = await FileAttachment("data/playerIds.csv").csv();
+```
+
+
+```jsx
+import * as ReactDOM from "npm:react-dom";
+
+const statsRoot = document.getElementById("stats-root");
+const root = ReactDOM.createRoot(statsRoot);
+console.log("rendering stats");
+
+root.render(
+        <div class="grid grid-cols-2">
+                <div class="stats" id="player1">
+                        <StatsComponent
+                        playerNumber={1}
+                        standardData={standard_data}
+                        passingData={passing_data}
+                        defenseData={defense_data}
+                        possessionData={possession_data}
+                        shootingData= {shooting_data}
+                        IDs={IDs}>
+                        </StatsComponent>
+                </div>
+                <div class="stats" id="player2">
+                        <StatsComponent
+                        playerNumber={2}
+                        standardData={standard_data}
+                        passingData={passing_data}
+                        defenseData={defense_data}
+                        possessionData={possession_data}
+                        shootingData= {shooting_data}
+                        IDs={IDs}>
+                        </StatsComponent>
+                </div>
+        </div>
+);
+```
+
+```js
+function getRadialPoints(playerId) {
+        return radialRank.flatMap(({ id, ...values }) =>
+                Object.entries(values).map(([key, value]) => ({id, key, value }))
+        ).filter(d => d.id == playerId);
+}
+```
+
+<div id="main-content">
+        <h1>Premier League Player Comparison</h1>
+        <div id="stats-root"></div>
+        <div style="margin-left: 10%" id="radial-container" class="grid grid-cols-2"></div>
 </div>
 
-<div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
-  <div class="card">${
-    resize((width) => Plot.plot({
-      title: "Your awesomeness over time 🚀",
-      subtitle: "Up and to the right!",
-      width,
-      y: {grid: true, label: "Awesomeness"},
-      marks: [
-        Plot.ruleY([0]),
-        Plot.lineY(aapl, {x: "Date", y: "Close", tip: true})
-      ]
-    }))
-  }</div>
-  <div class="card">${
-    resize((width) => Plot.plot({
-      title: "How big are penguins, anyway? 🐧",
-      width,
-      grid: true,
-      x: {label: "Body mass (g)"},
-      y: {label: "Flipper length (mm)"},
-      color: {legend: true},
-      marks: [
-        Plot.linearRegressionY(penguins, {x: "body_mass_g", y: "flipper_length_mm", stroke: "species"}),
-        Plot.dot(penguins, {x: "body_mass_g", y: "flipper_length_mm", stroke: "species", tip: true})
-      ]
-    }))
-  }</div>
-</div>
+<!--
+```js
+import { playerState, playerStateEvent } from "./sharedState.js";
+let player1RadialData = getRadialPoints(playerState.player1ID);
+let player2RadialData = getRadialPoints(playerState.player2ID);
 
----
+const radialContainer = document.getElementById("radial-container");
 
-## Next steps
+radialContainer.appendChild(renderRadialCharts(player1RadialData));
+radialContainer.appendChild(renderRadialCharts(player2RadialData));
 
-Here are some ideas of things you could try…
+playerStateEvent.addEventListener("playerIDUpdate", (event) => {
+        console.log(playerState.player1ID, playerState.player2ID);
+        // Trigger re-render or update radial data
+        player1RadialData = getRadialPoints(playerState.player1ID);
+        player2RadialData = getRadialPoints(playerState.player2ID);
 
-<div class="grid grid-cols-4">
-  <div class="card">
-    Chart your own data using <a href="https://observablehq.com/framework/lib/plot"><code>Plot</code></a> and <a href="https://observablehq.com/framework/files"><code>FileAttachment</code></a>. Make it responsive using <a href="https://observablehq.com/framework/javascript#resize(render)"><code>resize</code></a>.
-  </div>
-  <div class="card">
-    Create a <a href="https://observablehq.com/framework/project-structure">new page</a> by adding a Markdown file (<code>whatever.md</code>) to the <code>src</code> folder.
-  </div>
-  <div class="card">
-    Add a drop-down menu using <a href="https://observablehq.com/framework/inputs/select"><code>Inputs.select</code></a> and use it to filter the data shown in a chart.
-  </div>
-  <div class="card">
-    Write a <a href="https://observablehq.com/framework/loaders">data loader</a> that queries a local database or API, generating a data snapshot on build.
-  </div>
-  <div class="card">
-    Import a <a href="https://observablehq.com/framework/imports">recommended library</a> from npm, such as <a href="https://observablehq.com/framework/lib/leaflet">Leaflet</a>, <a href="https://observablehq.com/framework/lib/dot">GraphViz</a>, <a href="https://observablehq.com/framework/lib/tex">TeX</a>, or <a href="https://observablehq.com/framework/lib/duckdb">DuckDB</a>.
-  </div>
-  <div class="card">
-    Ask for help, or share your work or ideas, on our <a href="https://github.com/observablehq/framework/discussions">GitHub discussions</a>.
-  </div>
-  <div class="card">
-    Visit <a href="https://github.com/observablehq/framework">Framework on GitHub</a> and give us a star. Or file an issue if you’ve found a bug!
-  </div>
-</div>
+
+        radialContainer.innerHTML = "";
+
+        radialContainer.appendChild(renderRadialCharts(player1RadialData));
+        radialContainer.appendChild(renderRadialCharts(player2RadialData));
+});
+``` -->
 
 <style>
+        .card {
+                border: 1px solid black; /* Corrected CSS property */
+        }
+        .stats {
+                margin-top: 20px;
+                margin-left: 20px;
+                margin-right: 20px;
+        }
+        /* .card:hover {
+                cursor: pointer;
+        } */
+        .value {
+                float: right;
+                text-align: right;
+        }
+        .radial {                display: flex;
+                margin-top: 20px;
+                justify-content: center;
+        }
+        .statsCard{
+                padding: 0;
+                width: 100%;
+                display: flex;
+                flex-direction:column;
+                justify-content:center;
+                align-items: center;
+        }
+        .statsTable {
+                width: 80%;
+                text-align:left;
+                margin: 20px;
+        }
 
-.hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: var(--sans-serif);
-  margin: 4rem 0 8rem;
-  text-wrap: balance;
-  text-align: center;
-}
+        /* Dropdown styling */
+        .dropdown select {
+        width: 35%; /* Full width */
+        padding: 8px 12px;
+        margin-top: 10px;
+        background-color: #f1f1f1; /* Light background to blend in */
+        border: none;
+        border-radius: 12px; /* Rounded corners */
+        font-size: 16px;
+        transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
 
-.hero h1 {
-  margin: 1rem 0;
-  padding: 1rem 0;
-  max-width: none;
-  font-size: 14vw;
-  font-weight: 900;
-  line-height: 1;
-  background: linear-gradient(30deg, var(--theme-foreground-focus), currentColor);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+        /* Hover and focus styles */
+        .dropdown select:hover,
+        .dropdown select:focus {
+        background-color: #e2e2e2; /* Slightly darker on hover */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Light shadow on focus */
+        }
 
-.hero h2 {
-  margin: 0;
-  max-width: 34em;
-  font-size: 20px;
-  font-style: initial;
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--theme-foreground-muted);
-}
+        /* Style for dropdown arrow */
+        .dropdown select::after {
+        content: "▼"; /* Custom arrow */
+        position: absolute;
+        right: 10px;
+        top: calc(50% - 5px);
+        color: #888; /* Lighter arrow color */
+        pointer-events: none;
+        }
 
-@media (min-width: 640px) {
-  .hero h1 {
-    font-size: 90px;
-  }
-}
+        /* Ensuring the dropdown blends in with mobile devices */
+        .dropdown select {
+        -webkit-appearance: none; /* Safari */
+        -moz-appearance: none; /* Firefox */
+        }
 
+
+  g[aria-label=area] path {fill-opacity: 0.1; transition: fill-opacity .2s;}
+  g[aria-label=area]:hover path:not(:hover) {fill-opacity: 0.05; transition: fill-opacity .2s;}
+  g[aria-label=area] path:hover {fill-opacity: 0.3; transition: fill-opacity .2s;}
 </style>

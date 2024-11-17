@@ -1,0 +1,18 @@
+@import url("observablehq:default.css");
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+
+@import url("observablehq:theme-cotton.css") (prefers-color-scheme: light);
+
+#observablehq-sidebar {
+  --observablehq-sidebar-padding-left: calc(max(0rem, (80vw - var(--observablehq-max-width)) / 2));
+  width: calc(12vw); /* Sidebar width adjusts to 20% of the viewport width */
+}
+
+#observablehq-sidebar-toggle:indeterminate ~ #observablehq-center {
+  --observablehq-inset-left: calc(100px + 1rem);
+}
+
+#observablehq-sidebar-toggle:checked ~ #observablehq-center #observablehq-main, #observablehq-sidebar-toggle:indeterminate ~ #observablehq-center #observablehq-main {
+  padding-right: 0px;
+}

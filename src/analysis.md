@@ -1,5 +1,4 @@
 
-# [Prem Comparison](/index)
 ## Attack Stats
 
 ```js

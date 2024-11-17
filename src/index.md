@@ -1,12 +1,11 @@
 ---
-theme: "cotton"
 title: Premier League Player Comparison
 toc: false
 ---
 
 ```js
 import {NameCard} from "/components/stat_cards/top_stats.js";
-import {StatsComponent} from "/components/stat_cards/stats_cards.js";
+import {StatsComponent} from "/components/stat_cards/stats_component.js";
 import * as React from "npm:react";
 import * as d3 from "npm:d3";
 import {passingChart} from "/components/charts/passing.js";
@@ -116,7 +115,7 @@ function getRadialPoints(playerId) {
 ```
 
 <div id="main-content">
-        <h1>Premier League Player Comparison</h1>
+        <!-- <h1>Premier League Player Comparison</h1> -->
         <div id="stats-root"></div>
         <div style="margin-left: 10%" id="radial-container" class="grid grid-cols-2"></div>
 </div>
@@ -180,6 +179,16 @@ playerStateEvent.addEventListener("playerIDUpdate", (event) => {
                 margin: 20px;
         }
 
+        .per90 {
+                font-size: 0.8em;
+                align: right;
+        }
+
+        .details {
+                font-size: .9em;
+                line-height: .5;
+        }
+
         /* Dropdown styling */
         .dropdown select {
         width: 35%; /* Full width */
@@ -214,6 +223,28 @@ playerStateEvent.addEventListener("playerIDUpdate", (event) => {
         -webkit-appearance: none; /* Safari */
         -moz-appearance: none; /* Firefox */
         }
+
+.toggleButton {
+  background-color: #f5f5f5; /* Light gray background to blend in */
+  color: #333; /* Dark gray text for subtle contrast */
+  border: 1px solid #ccc; /* Thin border for subtle definition */
+  border-radius: 7px; /* Slightly rounded corners */
+  font-size: 12px; /* Smaller text size */
+  cursor: pointer; /* Pointer cursor */
+  transition: background-color 0.2s ease; /* Smooth background color change */
+  margin-left: 15px;
+}
+
+.toggleButton:hover {
+  background-color: #eaeaea; /* Slightly darker gray on hover */
+}
+
+.toggleButton:active {
+  background-color: #ddd; /* Darker gray for active state */
+}
+
+
+
 
 
   g[aria-label=area] path {fill-opacity: 0.1; transition: fill-opacity .2s;}

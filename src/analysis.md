@@ -1,4 +1,4 @@
-
+<!--
 ## Attack Stats
 
 ```js
@@ -76,4 +76,4 @@ ${radialChart(radialPoints)}
   g[aria-label=area]:hover path:not(:hover) {fill-opacity: 0.05; transition: fill-opacity .2s;}
   g[aria-label=area] path:hover {fill-opacity: 0.3; transition: fill-opacity .2s;}
 </style>
-
+ -->

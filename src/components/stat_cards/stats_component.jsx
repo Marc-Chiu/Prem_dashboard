@@ -1,23 +1,45 @@
 import * as React from "npm:react";
 import {useState, useEffect} from "npm:react";
-import d3 from "npm:d3";
-import { setPlayerID } from "../../sharedState.js";
+import { useDispatch, useSelector } from "npm:react-redux";
 import { TopStatsCard, AttackStatsCard, DribblingStatsCard, DefenseStatsCard } from "./stats_cards.js";
+import store from '../../redux/store.js';
+import { updatePlayerID, updatePlayerName } from '../../redux/actions.js';
+
+const POSITION_MAP = {
+        "DF": "Defender",
+        "FW": "Forward",
+        "MF": "Midfielder",
+        "GK": "Goalkeeper",
+        "DF,FW": "Defender, Forward",
+        "DF,MF": "Defender, Midfielder",
+        "FW,MF": "Forward, Midfielder",
+        "MF,FW": "Midfielder, Forward",
+        "MF,DF": "Midfielder, Defender",
+        "FW,DF": "Forward, Defender",
+};
 
 export function StatsComponent({ playerNumber, standardData, passingData, defenseData, possessionData, shootingData, IDs}) {
-        const defaultPlayerID = "10863";
-        const defaultName = "Martin Ødegaard";
-        const [selectedPlayerID, setSelectedPlayerID] = useState(defaultPlayerID);
-        const [selectedPlayerName, setSelectedPlayerName] = useState(defaultName);
+        const state = store.getState();
+        const [selectedPlayerID, setSelectedPlayerID] = useState(state[`player${playerNumber}ID`]);
+        const [selectedPlayerName, setSelectedPlayerName] = useState(state[`player${playerNumber}Name`]);
+
+        const defaultData = standardData.filter((d) => d.player === selectedPlayerName);
+
+        const [team, setTeam] = useState(defaultData[0].team);
+        const [position, setPosition] = useState(POSITION_MAP[defaultData[0].pos]);
 
         const handleSelectChange = (event) => {
                 const selectedOptions = event.target.selectedOptions[0];
-                const id = selectedOptions.value;
+                const id = selectedOptions.getAttribute("data-id");
                 const name = selectedOptions.getAttribute("data-name");
                 if (name) {
                         setSelectedPlayerID(id);
                         setSelectedPlayerName(name);
-                        setPlayerID(playerNumber, id)
+                        const data = standardData.filter((d) => d.player === name);
+                        setTeam(data[0].team);
+                        setPosition(POSITION_MAP[data[0].pos]);
+                        store.dispatch(updatePlayerID(playerNumber, id));
+                        store.dispatch(updatePlayerName(playerNumber, name));
                 }
         };
 
@@ -27,14 +49,14 @@ export function StatsComponent({ playerNumber, standardData, passingData, defens
                         <select onChange={handleSelectChange} value={selectedPlayerID} id="player">
                         <option value="">{selectedPlayerName}</option>
                         {IDs.map((player) => (
-                                <option key={player["Player ID"]} value={player["Player ID"]} data-name={player["Player Name"]}>
+                                <option key={player["Player ID"]} data-id={player["Player ID"]} data-name={player["Player Name"]}>
                                 {player["Player Name"]}
                                 </option>
                         ))}
                         </select>
                         <div class="details">
-                        <p>Position</p>
-                        <p>Team</p>
+                        <p>{team}</p>
+                        <p>{position}</p>
                         </div>
                 </div>
                 <div class="grid grid-cols-2">

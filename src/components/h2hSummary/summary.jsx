@@ -56,19 +56,21 @@ export function LeagueSummaryComponent() {
 
     return (
         <div>
-            <h1>Draft League Summary</h1>
+            <h1>H2H Draft League Summary</h1>
             <div className="main-body">
                 <label htmlFor="leagueID">Enter League ID:</label>
                 <input type="text" id="leagueID" />
                 <button id="leagueButton" onClick={GenerateSummary}>
                     Submit
                 </button>
-                {/* <p>can't find league id: https://draft.premierleague.com/api/bootstrap-dynamic</p> */}
+                <p id="find-league">can't find league id: <a href="https://draft.premierleague.com/api/bootstrap-dynamic">find league</a></p>
             </div>
             <div id="league-summary-container">
                 {error ? (
                     <h2>League Not Found</h2>
                 ) : leagueData ? (
+                leagueData.league.scoring != "h" ?
+                (   <h2>League is not h2h</h2> ) :
                     <div>
                         <h2>{leagueData.league.name}</h2>
                         <div>

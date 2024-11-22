@@ -1,54 +1,41 @@
 // See https://observablehq.com/framework/config for documentation.
-import {formatPrefix} from "d3-format";
 
 export default {
-  // The app’s title; used in the sidebar and webpage titles.
   title: "Prem Dashboard",
-  // The pages and sections in the sidebar. If you don’t specify this option,
-  // all pages will be listed in alphabetical order. Listing pages explicitly
-  // lets you organize them into sections and have unlisted pages.
+
   pages: [
     // {name: "Player Report", path: "/analysis"},
     // {name: "Fantasy Report", path: "/fantasy"},
     // {name: "Projections", path: "/projections"},
-    {name: "League Overview", path: "/h2h" },
+    // {name: "Game Week Summary", path: "/game_week_summary" },
+    { name: "League Overview", path: "/h2h" },
+    { name: "Games and Daily Challenge", path: "/games" },
   ],
 
-  // Content to add to the head of the page, e.g. for a favicon:
   head: '<link rel="icon" href="observable.png" type="image/png" sizes="32x32">',
-
-  // The path to the source root.
   root: "src",
-
-  // Some additional configuration options and their defaults:
-  // theme: "default", // try "light", "dark", "slate", etc.
-  //footer: `<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a</div>`, // what to show in the footer (HTML)
-  sidebar: true, // whether to show the sidebar
-  //header: true,
-  toc: false, // whether to show the table of contents
-  pager: false, // whether to show previous & next links in the footer
-  // output: "dist", // path to the output root for build
-  // search: true, // activate search
-  // linkify: true, // convert URLs in Markdown to links
-  // typographer: false, // smart quotes and other typographic improvements
-  // cleanUrls: true, // drop .html from URLs
+  sidebar: true,
+  toc: false,
+  pager: false,
   globalStylesheets: [
-    "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Spline+Sans+Mono:ital,wght@0,300..700;1,300..700&display=swap"
+    "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Spline+Sans+Mono:ital,wght@0,300..700;1,300..700&display=swap",
   ],
-  head: ({path}) => `<link rel="canonical" href="https://observablehq.com/framework${path.replace(/\/index$/, "/")}">
+  head: ({
+    path,
+  }) => `<link rel="canonical" href="https://observablehq.com/framework${path.replace(/\/index$/, "/")}">
   <link rel="apple-touch-icon" href="/observable.png">
   <link rel="icon" type="image/png" href="/observable.png" sizes="32x32">${
-      process.env.CI
-        ? `
+    process.env.CI
+      ? `
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9B88TP6PKQ"></script>
   <script>window.dataLayer=window.dataLayer||[];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js',new Date());\ngtag('config','G-9B88TP6PKQ');</script>`
-        : ""
-    }
+      : ""
+  }
   <script type="module">/Win/.test(navigator.platform) || Array.from(document.querySelectorAll(".win"), (e) => e.remove())</script>`,
-    home: `<span style="display: flex; align-items: center; font-weight: 500; gap: 0.5rem; margin-left: -0.5rem; color: var(--theme-foreground);">
+  home: `<span style="display: flex; align-items: center; font-weight: 500; gap: 0.5rem; margin-left: -0.5rem; color: var(--theme-foreground);">
       ${logo()} Prem Dashboard
     </span>`,
-    header: `<div style="display: flex; flex-grow: 1; align-items: center; justify-content: space-between; white-space: nowrap;">
+  header: `<div style="display: flex; flex-grow: 1; align-items: center; justify-content: space-between; white-space: nowrap;">
       <div>
         <a href="/" class="hide-if-sidebar" style="display: flex; align-items: center; gap: 0.5rem;">
           ${logo()} Premier League DashBoard
@@ -64,7 +51,7 @@ export default {
           <observable-made-by />
       </div>
     </div>`,
-    style: "style.css",
+  style: "style.css",
 };
 
 function logo() {

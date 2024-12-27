@@ -4,7 +4,7 @@ toc: false
 ---
 
 ```js
-import {LeagueSummaryComponent} from "/components/h2hSummary/summary.js";
+import {LeagueSummaryComponent} from "../components/h2hSummary/summary.js";
 ```
 
 ```jsx

@@ -8,8 +8,8 @@ export default {
     // {name: "Fantasy Report", path: "/fantasy"},
     // {name: "Projections", path: "/projections"},
     // {name: "Game Week Summary", path: "/game_week_summary" },
-    { name: "League Overview", path: "/h2h" },
-    { name: "Games and Daily Challenge", path: "/games" },
+    { name: "League Overview", path: "/pages/h2h" },
+    { name: "Games and Daily Challenge", path: "pages/games" },
   ],
 
   head: '<link rel="icon" href="observable.png" type="image/png" sizes="32x32">',

@@ -4,15 +4,25 @@ toc: false
 ---
 
 ```js
-import{HigherLower} from "/components/games/higherLower.js";
+import { HigherLower } from "../components/games/higherLower.js";
 import * as React from "npm:react";
 
-const standard_data = await FileAttachment("/fbrefData/player_standard.csv").csv();
-const passing_data = await FileAttachment("/fbrefData/player_passing.csv").csv();
-const defense_data = await FileAttachment("/fbrefData/player_defense.csv").csv();
-const possession_data = await FileAttachment("/fbrefData/player_possession.csv").csv();
-const shooting_data = await FileAttachment("/fbrefData/player_shooting.csv").csv();
-const IDs = await FileAttachment("data/playerIds.csv").csv();
+const standard_data = await FileAttachment(
+  "../fbrefData/player_standard.csv"
+).csv();
+const passing_data = await FileAttachment(
+  "../fbrefData/player_passing.csv"
+).csv();
+const defense_data = await FileAttachment(
+  "../fbrefData/player_defense.csv"
+).csv();
+const possession_data = await FileAttachment(
+  "../fbrefData/player_possession.csv"
+).csv();
+const shooting_data = await FileAttachment(
+  "../fbrefData/player_shooting.csv"
+).csv();
+const IDs = await FileAttachment("../data/playerIds.csv").csv();
 ```
 
   <!-- <div id="Games-header" class="grid grid-cols-4">
@@ -25,13 +35,17 @@ const statsRoot = document.getElementById("games-root");
 const root = ReactDOM.createRoot(statsRoot);
 
 root.render(
-        <div>
-
-                <HigherLower
-                statsCategories={[standard_data, passing_data, defense_data, possession_data, shooting_data]}
-                >
-                </HigherLower>
-        </div>
+  <div>
+    <HigherLower
+      statsCategories={[
+        standard_data,
+        passing_data,
+        defense_data,
+        possession_data,
+        shooting_data,
+      ]}
+    ></HigherLower>
+  </div>
 );
 ```
 

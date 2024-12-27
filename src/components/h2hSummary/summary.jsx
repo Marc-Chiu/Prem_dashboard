@@ -76,7 +76,7 @@ export function LeagueSummaryComponent() {
                         <div>
                             <DraftStandings members={joinData(leagueData.league_entries, leagueData.standings)}></DraftStandings>
                             <BubbleChartComponent leagueData={leagueData}></BubbleChartComponent>
-                            {/* <ScoreByPosition weeks={weeks} leagueEntries={leagueData.league_entries}></ScoreByPosition> */}
+                            <ScoreByPosition weeks={weeks} leagueEntries={leagueData.league_entries}></ScoreByPosition>
                         </div>
                     </div>
                 ) : (
